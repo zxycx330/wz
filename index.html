@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zxy的小众网站收藏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        #search {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        #search:focus {
+            outline: none;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1.2rem;
+            background-color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .card-desc {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .card-category {
+            background-color: #e9ecef;
+            color: var(--dark-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .card-icon {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 3rem;
+            color: var(--gray-color);
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .categories::-webkit-scrollbar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>zxy的小众网站收藏</h1>
+            <p>精心挑选的优质网站资源</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="search" placeholder="搜索网站...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="categories">
+            <button class="category-btn active" data-category="all">全部</button>
+            <button class="category-btn" data-category="design">设计</button>
+            <button class="category-btn" data-category="development">开发</button>
+            <button class="category-btn" data-category="productivity">效率工具</button>
+            <button class="category-btn" data-category="learning">学习</button>
+            <button class="category-btn" data-category="news">新闻资讯</button>
+            <button class="category-btn" data-category="entertainment">娱乐</button>
+            <button class="category-btn" data-category="else">其他</button>
+        </div>
+
+        <div class="grid" id="websites-grid">
+            <!-- 网站卡片将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // 网站数据
+        const websites = [
+            {
+                title: "LKs 网站推荐合集",
+                description: "好东西",
+                url: "https://lkssite.vip/",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "心理测试大全",
+                description: "一个免费提供精神病院标准测试的平台",
+                url: "https://minke8.cn/xl/?continueFlag=8a926fe6177d7d4b7d4cc196f59e98cf",
+                category: "else",
+                image: "images/xinliceshi.png"
+            },
+            {
+                title: "similarsites",
+                description: "一个能查找相似网站的网站",
+                url: "https://www.similarsites.com/",
+                category: "productivity",
+                image: "images/diannao.png"
+            },
+            {
+                title: "学吧导航",
+                description: "自学资源网站导航",
+                url: "https://www.xue8nav.com/",
+                category: "learning",
+                image: "images/xuexi.png"
+            },
+            {
+                title: "IFIXIT",
+                description: "一个提供免费电子设备维修指南、教程和工具的开放式协作平台（要翻墙呜呜呜）",
+                url: "https://zh.ifixit.com/",
+                category: "productivity",
+                image: "images/weixiu.png"
+            },
+            {
+                title: "科塔学术",
+                description: "学术资源网站导航",
+                url: "https://www.producthunt.com",
+                category: "learning",
+                image: "images/xueshu.png"
+            },
+            {
+                title: "Skyline",
+                description: "全球高清实况摄像头！（也要翻墙呜呜呜）",
+                url: "https://www.skylinewebcams.com/",
+                category: "entertainment",
+                image: "images/jiankong.png"
+            },
+            {
+                title: "纸飞机模拟器（Fold ‘n Fly）",
+                description: "一个教你折各种纸飞机的网站，从简单的到复杂的都有，甚至还有空气动力学原理，适合打发时间或带孩子玩。",
+                url: "https://www.foldnfly.com",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "无聊按钮（The Useless Web）",
+                description: "点击后会随机跳转到各种无厘头的网站，比如无限旋转的猫、会跳舞的香蕉等，适合解压。",
+                url: "https://theuselessweb.com",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "全世界摄像头直播（EarthCam）",
+                description: "可以看到全球各地的实时摄像头画面，比如纽约时代广场、埃菲尔铁塔，甚至非洲野生动物。",
+                url: "https://www.earthcam.com",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "LKs 网站推荐合集",
+                description: "好东西",
+                url: "https://lkssite.vip/",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "LKs 网站推荐合集",
+                description: "好东西",
+                url: "https://lkssite.vip/",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "LKs 网站推荐合集",
+                description: "好东西",
+                url: "https://lkssite.vip/",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "LKs 网站推荐合集",
+                description: "好东西",
+                url: "https://lkssite.vip/",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "LKs 网站推荐合集",
+                description: "好东西",
+                url: "https://lkssite.vip/",
+                category: "entertainment",
+                image: "images/shen.png"
+            },
+            {
+                title: "LKs 网站推荐合集",
+                description: "好东西",
+                url: "https://lkssite.vip/",
+                category: "entertainment",
+                image: "images/shen.png"
+            }
+        ];
+
+        // DOM元素
+        const grid = document.getElementById('websites-grid');
+        const searchInput = document.getElementById('search');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+
+        // 渲染网站卡片
+        function renderWebsites(filteredWebsites = websites) {
+            grid.innerHTML = '';
+            
+            if (filteredWebsites.length === 0) {
+                grid.innerHTML = '<div class="no-results"><i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i><h3>没有找到匹配的网站</h3></div>';
+                return;
+            }
+            
+            filteredWebsites.forEach(site => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.category = site.category;
+                
+                card.innerHTML = `
+                    <div class="card-image" style="background-image: url('${site.image}')"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">${site.title}</h3>
+                        <p class="card-desc">${site.description}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-category">${site.category}</span>
+                        <i class="fas fa-external-link-alt card-icon"></i>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    window.open(site.url, '_blank');
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // 初始渲染
+        renderWebsites();
+
+        // 搜索功能
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const activeCategory = document.querySelector('.category-btn.active').dataset.category;
+            
+            const filtered = websites.filter(site => {
+                const matchesSearch = site.title.toLowerCase().includes(searchTerm) || 
+                                     site.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = activeCategory === 'all' || site.category === activeCategory;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            renderWebsites(filtered);
+        });
+
+        // 分类筛选
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const category = btn.dataset.category;
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                if (category === 'all') {
+                    if (searchTerm === '') {
+                        renderWebsites();
+                    } else {
+                        const filtered = websites.filter(site => 
+                            site.title.toLowerCase().includes(searchTerm) || 
+                            site.description.toLowerCase().includes(searchTerm)
+                        );
+                        renderWebsites(filtered);
+                    }
+                } else {
+                    const filtered = websites.filter(site => {
+                        const matchesCategory = site.category === category;
+                        const matchesSearch = searchTerm === '' || 
+                                               site.title.toLowerCase().includes(searchTerm) || 
+                                               site.description.toLowerCase().includes(searchTerm);
+                        
+                        return matchesCategory && matchesSearch;
+                    });
+                    
+                    renderWebsites(filtered);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
